@@ -56,18 +56,9 @@ async function scrapeHackerRankProfile(username) {
       }
     });
 
-    const workExperience = [];
-    $('.timeline-item-content').each((i, el) => {
-      const company = $(el).find('.timeline-item-title').text().trim();
-      let duration = $(el).find('.timeline-item-duration').text().trim();
-      duration = duration.replace(/^[.\s]+/, '');
+   
 
-      if (company || duration) {
-        workExperience.push({ company, duration });
-      }
-    });
-
-    return { badges, certificates, workExperience };
+    return { badges, certificates};
   } catch (error) {
     console.error(`Error scraping profile for ${username}:`, error.message);
     return null;
@@ -87,7 +78,7 @@ app.get("/profile/:username", async (req, res) => {
       getHackerRankProfile(username),
       scrapeHackerRankProfile(username),
     ]);
-console.log(apiData)
+// console.log(apiData)
     if (apiData.model && scrapedData) {
       const combinedData = {
         username: apiData.model.username,
@@ -105,11 +96,10 @@ console.log(apiData)
         resume: apiData.model.resume,
         badges:scrapedData.badges,
         certificates:scrapedData.certificates,
-        workExperience:scrapedData.workExperience
       };
  
 
-      console.log("Combined data:", JSON.stringify(combinedData, null, 2));
+    //   console.log("Combined data:", JSON.stringify(combinedData, null, 2));
       res.json(combinedData);
     } else {
       res.status(404).json({ error: "Failed to fetch profile data" });
